@@ -1,29 +1,23 @@
 {
   "schema": {
-    "https://master.staging.saleor.cloud/graphql/": {}
+    "https://store-124msbg38z-794380.mybigcommerce.com/graphql": {
+      "headers": {
+        "Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJjaWQiOjc5NDM4MCwiY29ycyI6WyJodHRwczovL2JpZ2NvbW1lcmNlLmdpdGh1Yi5pbyJdLCJlYXQiOjE2MzcwMTc3MjMsImlhdCI6MTYzMTc0Nzg1MCwiaXNzIjoiQkMiLCJzaWQiOjEwMDIwMTcwNjMsInN1YiI6IjdjemFhNG51ZGVwNWdjNnJlMGVscnN4amNkMWVscjEiLCJzdWJfdHlwZSI6MiwidG9rZW5fdHlwZSI6MX0.Pp2E_zvVlwpYD5eMYYgoPEjKnZuT-BM5_qI1HT-W4TOcDAL0Gw1_JE52AF-owgvcoUby_Aww9EdFZIXW72W4uQ"
+      }
+    }
   },
   "documents": [
     {
-      "./framework/saleor/utils/queries/get-all-products-query.ts": {
-        "noRequire": true
-      }
-    },
-    {
-      "./framework/saleor/utils/queries/get-all-products-paths-query.ts": {
-        "noRequire": true
-      }
-    },
-    {
-      "./framework/saleor/utils/queries/get-products.ts": {
+      "./framework/bigcommerce/api/**/*.ts": {
         "noRequire": true
       }
     }
   ],
   "generates": {
-    "./framework/saleor/schema.d.ts": {
+    "./framework/bigcommerce/schema.d.ts": {
       "plugins": ["typescript", "typescript-operations"]
     },
-    "./framework/saleor/schema.graphql": {
+    "./framework/bigcommerce/schema.graphql": {
       "plugins": ["schema-ast"]
     }
   },
@@ -31,3 +25,4 @@
     "afterAllFileWrite": ["prettier --write"]
   }
 }
+

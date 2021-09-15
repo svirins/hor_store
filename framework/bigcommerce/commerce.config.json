@@ -1,7 +1,10 @@
 {
   "provider": "bigcommerce",
   "features": {
-    "wishlist": true,
-    "customerAuth": true
+    "cart": true,
+    "search": true,
+    "wishlist": false,
+    "customerAuth": true,
+    "customCheckout": false
   }
 }
