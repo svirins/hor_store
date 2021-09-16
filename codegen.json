@@ -25,4 +25,3 @@
     "afterAllFileWrite": ["prettier --write"]
   }
 }
-

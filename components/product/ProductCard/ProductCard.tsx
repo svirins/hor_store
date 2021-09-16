@@ -4,7 +4,6 @@ import Link from 'next/link'
 import type { Product } from '@commerce/types/product'
 import s from './ProductCard.module.css'
 import Image, { ImageProps } from 'next/image'
-import WishlistButton from '@components/wishlist/WishlistButton'
 import usePrice from '@framework/product/use-price'
 import ProductTag from '../ProductTag'
 
@@ -61,13 +60,6 @@ const ProductCard: FC<Props> = ({
 
         {variant === 'simple' && (
           <>
-            {process.env.COMMERCE_WISHLIST_ENABLED && (
-              <WishlistButton
-                className={s.wishlistButton}
-                productId={product.id}
-                variant={product.variants[0]}
-              />
-            )}
             {!noNameTag && (
               <div className={s.header}>
                 <h3 className={s.name}>
@@ -97,13 +89,7 @@ const ProductCard: FC<Props> = ({
 
         {variant === 'default' && (
           <>
-            {process.env.COMMERCE_WISHLIST_ENABLED && (
-              <WishlistButton
-                className={s.wishlistButton}
-                productId={product.id}
-                variant={product.variants[0] as any}
-              />
-            )}
+
             <ProductTag
               name={product.name}
               price={`${price} ${product.price?.currencyCode}`}
