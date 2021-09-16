@@ -1,4 +1,29 @@
 """
+Login result
+"""
+type LoginResult {
+  """
+  The result of a login
+  """
+  result: String!
+}
+
+"""
+Logout result
+"""
+type LogoutResult {
+  """
+  The result of a logout
+  """
+  result: String!
+}
+
+type Mutation {
+  login(email: String!, password: String!): LoginResult!
+  logout: LogoutResult!
+}
+
+"""
 Aggregated
 """
 type Aggregated {
@@ -29,21 +54,6 @@ type AggregatedInventory {
 }
 
 """
-Author
-"""
-type Author {
-  """
-  Author name.
-  """
-  name: String!
-}
-
-"""
-The `BigDecimal` scalar type represents signed fractional values with arbitrary precision.
-"""
-scalar BigDecimal
-
-"""
 Brand
 """
 type Brand implements Node {
@@ -70,22 +80,17 @@ type Brand implements Node {
   """
   Page title for the brand.
   """
-  pageTitle: String! @deprecated(reason: "Use SEO details instead.")
+  pageTitle: String!
 
   """
   Meta description for the brand.
   """
-  metaDesc: String! @deprecated(reason: "Use SEO details instead.")
+  metaDesc: String!
 
   """
   Meta keywords for the brand.
   """
-  metaKeywords: [String!]! @deprecated(reason: "Use SEO details instead.")
-
-  """
-  Brand SEO details.
-  """
-  seo: SeoDetails!
+  metaKeywords: [String!]!
 
   """
   Search keywords for the brand.
@@ -101,7 +106,6 @@ type Brand implements Node {
     after: String
     first: Int
     last: Int
-    hideOutOfStock: Boolean
   ): ProductConnection!
 
   """
@@ -285,11 +289,6 @@ interface CatalogProductOption {
   One of the option values is required to be selected for the checkout.
   """
   isRequired: Boolean!
-
-  """
-  Indicates whether it is a variant option or modifier.
-  """
-  isVariantOption: Boolean!
 }
 
 """
@@ -361,8 +360,6 @@ type Category implements Node {
     after: String
     first: Int
     last: Int
-    hideOutOfStock: Boolean
-    sortBy: CategoryProductSort
   ): ProductConnection!
 
   """
@@ -376,11 +373,6 @@ type Category implements Node {
     first: Int
     last: Int
   ): MetafieldConnection!
-
-  """
-  Category SEO details.
-  """
-  seo: SeoDetails!
 }
 
 """
@@ -414,21 +406,6 @@ type CategoryEdge {
 }
 
 """
-Product sorting by categories.
-"""
-enum CategoryProductSort {
-  DEFAULT
-  FEATURED
-  NEWEST
-  BEST_SELLING
-  A_TO_Z
-  Z_TO_A
-  BEST_REVIEWED
-  LOWEST_PRICE
-  HIGHEST_PRICE
-}
-
-"""
 An item in a tree of categories.
 """
 type CategoryTreeItem {
@@ -456,11 +433,6 @@ type CategoryTreeItem {
   The number of products in this category.
   """
   productCount: Int!
-
-  """
-  The category image.
-  """
-  image: Image
 
   """
   Subcategories of this category
@@ -491,11 +463,6 @@ type CheckboxOption implements CatalogProductOption {
   One of the option values is required to be selected for the checkout.
   """
   isRequired: Boolean!
-
-  """
-  Indicates whether it is a variant option or modifier.
-  """
-  isVariantOption: Boolean!
 }
 
 """
@@ -526,124 +493,6 @@ type ContactField {
   Store phone number.
   """
   phone: String!
-}
-
-"""
-The page content.
-"""
-type Content {
-  renderedRegionsByPageType(pageType: PageType!): RenderedRegionsByPageType!
-  renderedRegionsByPageTypeAndEntityId(
-    entityId: Long!
-    entityPageType: EntityPageType!
-  ): RenderedRegionsByPageType!
-}
-
-type Currency {
-  """
-  Currency ID.
-  """
-  entityId: Int!
-
-  """
-  Currency code.
-  """
-  code: currencyCode!
-
-  """
-  Currency name.
-  """
-  name: String!
-
-  """
-  Flag image URL.
-  """
-  flagImage: String
-
-  """
-  Indicates whether this currency is active.
-  """
-  isActive: Boolean!
-
-  """
-  Exchange rate relative to default currency.
-  """
-  exchangeRate: Float!
-
-  """
-  Indicates whether this currency is transactional.
-  """
-  isTransactional: Boolean!
-
-  """
-  Currency display settings.
-  """
-  display: CurrencyDisplay!
-}
-
-"""
-A connection to a list of items.
-"""
-type CurrencyConnection {
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-
-  """
-  A list of edges.
-  """
-  edges: [CurrencyEdge]
-}
-
-type CurrencyDisplay {
-  """
-  Currency symbol.
-  """
-  symbol: String!
-
-  """
-  Currency symbol.
-  """
-  symbolPlacement: CurrencySymbolPosition!
-
-  """
-  Currency decimal token.
-  """
-  decimalToken: String!
-
-  """
-  Currency thousands token.
-  """
-  thousandsToken: String!
-
-  """
-  Currency decimal places.
-  """
-  decimalPlaces: Int!
-}
-
-"""
-An edge in a connection.
-"""
-type CurrencyEdge {
-  """
-  The item at the end of the edge.
-  """
-  node: Currency!
-
-  """
-  A cursor for use in pagination.
-  """
-  cursor: String!
-}
-
-"""
-Currency symbol position
-"""
-enum CurrencySymbolPosition {
-  LEFT
-  RIGHT
 }
 
 """
@@ -816,11 +665,6 @@ type DateFieldOption implements CatalogProductOption {
   One of the option values is required to be selected for the checkout.
   """
   isRequired: Boolean!
-
-  """
-  Indicates whether it is a variant option or modifier.
-  """
-  isVariantOption: Boolean!
 }
 
 scalar DateTime
@@ -851,54 +695,6 @@ type DisplayField {
 }
 
 """
-Distance
-"""
-type Distance {
-  """
-  Distance in specified length unit
-  """
-  value: Float!
-
-  """
-  Length unit
-  """
-  lengthUnit: LengthUnit!
-}
-
-"""
-Filter locations by the distance
-"""
-input DistanceFilter {
-  """
-  Radius of search in length units specified in lengthUnit argument
-  """
-  radius: Float!
-
-  """
-  Signed decimal degrees without compass direction
-  """
-  longitude: Float!
-
-  """
-  Signed decimal degrees without compass direction
-  """
-  latitude: Float!
-  lengthUnit: LengthUnit!
-}
-
-"""
-Entity page type
-"""
-enum EntityPageType {
-  BLOG_POST
-  BRAND
-  CATEGORY
-  CONTACT_US
-  PAGE
-  PRODUCT
-}
-
-"""
 A form allowing selection and uploading of a file from the user's local computer.
 """
 type FileUploadFieldOption implements CatalogProductOption {
@@ -916,11 +712,6 @@ type FileUploadFieldOption implements CatalogProductOption {
   One of the option values is required to be selected for the checkout.
   """
   isRequired: Boolean!
-
-  """
-  Indicates whether it is a variant option or modifier.
-  """
-  isVariantOption: Boolean!
 }
 
 """
@@ -986,14 +777,9 @@ type Inventory {
   Locations
   """
   locations(
-    entityIds: [Int!] = []
-    codes: [String!] = []
-    typeIds: [String!] = []
-    serviceTypeIds: [String!] = []
-    distanceFilter: DistanceFilter
-    countryCodes: [countryCode!] = []
-    states: [String!] = []
-    cities: [String!] = []
+    entityIds: [Int!]
+    codes: [String!]
+    typeIds: [String!]
     before: String
     after: String
     first: Int
@@ -1024,35 +810,6 @@ type InventoryByLocations {
   Indicates whether this product is in stock.
   """
   isInStock: Boolean!
-
-  """
-  Distance between location and specified longitude and latitude
-  """
-  locationDistance: Distance
-
-  """
-  Location type id.
-  """
-  locationEntityTypeId: String
-
-  """
-  Location service type ids.
-  """
-  locationEntityServiceTypeIds: [String!]!
-    @deprecated(reason: "Deprecated. Will be substituted with pickup methods.")
-
-  """
-  Location code.
-  """
-  locationEntityCode: String!
-}
-
-"""
-length unit
-"""
-enum LengthUnit {
-  Miles
-  Kilometres
 }
 
 """
@@ -1086,21 +843,6 @@ type LocationEdge {
 }
 
 """
-Login result
-"""
-type LoginResult {
-  """
-  The result of a login
-  """
-  result: String! @deprecated(reason: "Use customer node instead.")
-
-  """
-  The currently logged in customer.
-  """
-  customer: Customer
-}
-
-"""
 Logo field
 """
 type LogoField {
@@ -1114,21 +856,6 @@ type LogoField {
   """
   image: Image!
 }
-
-"""
-Logout result
-"""
-type LogoutResult {
-  """
-  The result of a logout
-  """
-  result: String!
-}
-
-"""
-The `Long` scalar type represents non-fractional signed whole numeric values. Long can represent values between -(2^63) and 2^63 - 1.
-"""
-scalar Long
 
 """
 Measurement
@@ -1248,11 +975,6 @@ type MultiLineTextFieldOption implements CatalogProductOption {
   One of the option values is required to be selected for the checkout.
   """
   isRequired: Boolean!
-
-  """
-  Indicates whether it is a variant option or modifier.
-  """
-  isVariantOption: Boolean!
 }
 
 """
@@ -1288,11 +1010,6 @@ type MultipleChoiceOption implements CatalogProductOption {
   One of the option values is required to be selected for the checkout.
   """
   isRequired: Boolean!
-
-  """
-  Indicates whether it is a variant option or modifier.
-  """
-  isVariantOption: Boolean!
 }
 
 """
@@ -1313,16 +1030,6 @@ type MultipleChoiceOptionValue implements CatalogProductOptionValue {
   Indicates whether this value is the chosen default selected value.
   """
   isDefault: Boolean!
-}
-
-type Mutation {
-  login(email: String!, password: String!): LoginResult!
-  logout: LogoutResult!
-
-  """
-  The wishlist mutations.
-  """
-  wishlist: WishlistMutations!
 }
 
 """
@@ -1353,11 +1060,6 @@ type NumberFieldOption implements CatalogProductOption {
   One of the option values is required to be selected for the checkout.
   """
   isRequired: Boolean!
-
-  """
-  Indicates whether it is a variant option or modifier.
-  """
-  isVariantOption: Boolean!
 }
 
 """
@@ -1451,46 +1153,6 @@ type PageInfo {
 }
 
 """
-Page type
-"""
-enum PageType {
-  ACCOUNT_ADDRESS
-  ACCOUNT_ADD_ADDRESS
-  ACCOUNT_ADD_RETURN
-  ACCOUNT_ADD_WISHLIST
-  ACCOUNT_DOWNLOAD_ITEM
-  ACCOUNT_EDIT
-  ACCOUNT_INBOX
-  ACCOUNT_ORDERS_ALL
-  ACCOUNT_ORDERS_COMPLETED
-  ACCOUNT_ORDERS_DETAILS
-  ACCOUNT_ORDERS_INVOICE
-  ACCOUNT_RECENT_ITEMS
-  ACCOUNT_RETURNS
-  ACCOUNT_RETURN_SAVED
-  ACCOUNT_WISHLISTS
-  ACCOUNT_WISHLIST_DETAILS
-  AUTH_ACCOUNT_CREATED
-  AUTH_CREATE_ACC
-  AUTH_FORGOT_PASS
-  AUTH_LOGIN
-  AUTH_NEW_PASS
-  BLOG
-  BRANDS
-  CART
-  COMPARE
-  GIFT_CERT_BALANCE
-  GIFT_CERT_PURCHASE
-  GIFT_CERT_REDEEM
-  HOME
-  ORDER_INFO
-  SEARCH
-  SITEMAP
-  SUBSCRIBED
-  UNSUBSCRIBE
-}
-
-"""
 The min and max range of prices that apply to this product.
 """
 type PriceRanges {
@@ -1505,17 +1167,12 @@ type PriceRanges {
   retailPriceRange: MoneyRange
 }
 
-input PriceSearchFilterInput {
-  minPrice: Float
-  maxPrice: Float
-}
-
 """
 The various prices that can be set on a product.
 """
 type Prices {
   """
-  Calculated price of the product.  Calculated price takes into account basePrice, salePrice, rules (modifier, option, option set) that apply to the product configuration, and customer group discounts.  It represents the in-cart price for a product configuration without bulk pricing rules.
+  Calculated price of the product.
   """
   price: Money!
 
@@ -1622,19 +1279,12 @@ type Product implements Node {
   """
   Absolute URL path for adding a product to customer's wishlist.
   """
-  addToWishlistUrl: String! @deprecated(reason: "Deprecated.")
+  addToWishlistUrl: String!
 
   """
   Prices object determined by supplied product ID, variant ID, and selected option IDs.
   """
-  prices(
-    includeTax: Boolean = false
-
-    """
-    Please select a currency
-    """
-    currencyCode: currencyCode
-  ): Prices
+  prices(includeTax: Boolean = false, currencyCode: currencyCode): Prices
 
   """
   The minimum and maximum price of this product based on variant pricing and/or modifier price rules.
@@ -1670,7 +1320,7 @@ type Product implements Node {
     after: String
     first: Int
     last: Int
-  ): OptionConnection! @deprecated(reason: "Use productOptions instead.")
+  ): OptionConnection!
 
   """
   Product options.
@@ -1785,47 +1435,10 @@ type Product implements Node {
   ): MetafieldConnection!
 
   """
-  Universal product code.
-  """
-  upc: String
-
-  """
-  Manufacturer part number.
-  """
-  mpn: String
-
-  """
-  Global trade item number.
-  """
-  gtin: String
-
-  """
   Product creation date
   """
   createdAt: DateTimeExtended!
     @deprecated(reason: "Alpha version. Do not use in production.")
-
-  """
-  Reviews associated with the product.
-  """
-  reviews(
-    sort: ProductReviewsSortInput
-    filters: ProductReviewsFiltersInput
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): ReviewConnection!
-
-  """
-  Product SEO details.
-  """
-  seo: SeoDetails!
-}
-
-input ProductAttributeSearchFilterInput {
-  attribute: String!
-  values: [String!]!
 }
 
 """
@@ -2072,22 +1685,6 @@ type ProductPreOrder implements ProductAvailability {
   description: String!
 }
 
-input ProductReviewsFiltersInput {
-  rating: ProductReviewsRatingFilterInput
-}
-
-input ProductReviewsRatingFilterInput {
-  minRating: Int
-  maxRating: Int
-}
-
-enum ProductReviewsSortInput {
-  NEWEST
-  OLDEST
-  HIGHEST_RATING
-  LOWEST_RATING
-}
-
 """
 Unavailable Product
 """
@@ -2129,23 +1726,6 @@ type Query {
     @deprecated(reason: "Alpha version. Do not use in production.")
 }
 
-input RatingSearchFilterInput {
-  minRating: Float
-  maxRating: Float
-}
-
-type Region {
-  """
-  The name of a region.
-  """
-  name: String!
-
-  """
-  The rendered HTML content targeted at the region.
-  """
-  html: String!
-}
-
 """
 A connection to a list of items.
 """
@@ -2177,87 +1757,9 @@ type RelatedProductsEdge {
 }
 
 """
-The rendered regions by specific page.
-"""
-type RenderedRegionsByPageType {
-  regions: [Region!]!
-}
-
-"""
-Review
-"""
-type Review {
-  """
-  Unique ID for the product review.
-  """
-  entityId: Long!
-
-  """
-  Product review author.
-  """
-  author: Author!
-
-  """
-  Product review title.
-  """
-  title: String!
-
-  """
-  Product review text.
-  """
-  text: String!
-
-  """
-  Product review rating.
-  """
-  rating: Int!
-
-  """
-  Product review creation date.
-  """
-  createdAt: DateTimeExtended!
-}
-
-"""
-A connection to a list of items.
-"""
-type ReviewConnection {
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-
-  """
-  A list of edges.
-  """
-  edges: [ReviewEdge]
-}
-
-"""
-An edge in a connection.
-"""
-type ReviewEdge {
-  """
-  The item at the end of the edge.
-  """
-  node: Review!
-
-  """
-  A cursor for use in pagination.
-  """
-  cursor: String!
-}
-
-"""
 Review Rating Summary
 """
 type Reviews {
-  """
-  Average rating of the product.
-  """
-  averageRating: Float!
-    @deprecated(reason: "Alpha version. Do not use in production.")
-
   """
   Total number of reviews on product.
   """
@@ -2277,77 +1779,6 @@ type Route {
   node
   """
   node: Node
-}
-
-"""
-Store search settings.
-"""
-type Search {
-  """
-  Product filtering enabled.
-  """
-  productFilteringEnabled: Boolean!
-}
-
-type SearchProducts {
-  """
-  Details of the products.
-  """
-  products(after: String, first: Int): ProductConnection!
-}
-
-input SearchProductsFiltersInput {
-  searchTerm: String
-  price: PriceSearchFilterInput
-  rating: RatingSearchFilterInput
-  categoryEntityId: Int
-  categoryEntityIds: [Int!]
-  brandEntityIds: [Int!]
-  productAttributes: [ProductAttributeSearchFilterInput!]
-  isFreeShipping: Boolean
-  isFeatured: Boolean
-  isInStock: Boolean
-}
-
-enum SearchProductsSortInput {
-  FEATURED
-  NEWEST
-  BEST_SELLING
-  BEST_REVIEWED
-  A_TO_Z
-  Z_TO_A
-  LOWEST_PRICE
-  HIGHEST_PRICE
-}
-
-type SearchQueries {
-  """
-  Details of the products and facets matching given search criteria.
-  """
-  searchProducts(
-    filters: SearchProductsFiltersInput!
-    sort: SearchProductsSortInput
-  ): SearchProducts!
-}
-
-"""
-Seo Details
-"""
-type SeoDetails {
-  """
-  Page title.
-  """
-  pageTitle: String!
-
-  """
-  Meta description.
-  """
-  metaDescription: String!
-
-  """
-  Meta keywords.
-  """
-  metaKeywords: String!
 }
 
 """
@@ -2393,24 +1824,13 @@ type Settings {
   Channel ID.
   """
   channelId: Long!
-  tax: TaxDisplaySettings
-
-  """
-  Store search settings.
-  """
-  search: Search!
 }
 
 """
 A site
 """
 type Site {
-  """
-  The Search queries.
-  """
-  search: SearchQueries!
-    @deprecated(reason: "Alpha version. Do not use in production.")
-  categoryTree(rootEntityId: Int): [CategoryTreeItem!]!
+  categoryTree: [CategoryTreeItem!]!
 
   """
   Details of the brand.
@@ -2433,7 +1853,6 @@ type Site {
     last: Int
     ids: [ID!] = []
     entityIds: [Int!] = []
-    hideOutOfStock: Boolean
   ): ProductConnection!
 
   """
@@ -2444,7 +1863,6 @@ type Site {
     after: String
     first: Int
     last: Int
-    hideOutOfStock: Boolean
   ): ProductConnection!
 
   """
@@ -2455,7 +1873,6 @@ type Site {
     after: String
     first: Int
     last: Int
-    hideOutOfStock: Boolean
   ): ProductConnection!
 
   """
@@ -2466,7 +1883,6 @@ type Site {
     after: String
     first: Int
     last: Int
-    hideOutOfStock: Boolean
   ): ProductConnection!
 
   """
@@ -2489,27 +1905,6 @@ type Site {
   Store settings.
   """
   settings: Settings
-  content: Content!
-
-  """
-  Currency details.
-  """
-  currency(
-    """
-    Currency Code
-    """
-    currencyCode: currencyCode!
-  ): Currency
-
-  """
-  Store Currencies.
-  """
-  currencies(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): CurrencyConnection!
 }
 
 """
@@ -2552,27 +1947,6 @@ type SwatchOptionValue implements CatalogProductOptionValue {
   isDefault: Boolean!
 }
 
-type TaxDisplaySettings {
-  """
-  Tax display setting for Product Details Page.
-  """
-  pdp: TaxPriceDisplay!
-
-  """
-  Tax display setting for Product List Page.
-  """
-  plp: TaxPriceDisplay!
-}
-
-"""
-Tax setting can be set included or excluded (Tax setting can also be set to both on PDP/PLP).
-"""
-enum TaxPriceDisplay {
-  INC
-  EX
-  BOTH
-}
-
 """
 A single line text input field.
 """
@@ -2591,11 +1965,6 @@ type TextFieldOption implements CatalogProductOption {
   One of the option values is required to be selected for the checkout.
   """
   isRequired: Boolean!
-
-  """
-  Indicates whether it is a variant option or modifier.
-  """
-  isVariantOption: Boolean!
 }
 
 """
@@ -2680,14 +2049,7 @@ type Variant implements Node {
   """
   Variant prices
   """
-  prices(
-    includeTax: Boolean = false
-
-    """
-    Please select a currency
-    """
-    currencyCode: currencyCode
-  ): Prices
+  prices(includeTax: Boolean = false, currencyCode: currencyCode): Prices
 
   """
   Variant inventory
@@ -2705,21 +2067,6 @@ type Variant implements Node {
     first: Int
     last: Int
   ): MetafieldConnection!
-
-  """
-  Universal product code.
-  """
-  upc: String
-
-  """
-  Manufacturer part number.
-  """
-  mpn: String
-
-  """
-  Global trade item number.
-  """
-  gtin: String
 }
 
 """
@@ -2771,10 +2118,6 @@ type VariantInventory {
   """
   byLocation(
     locationEntityIds: [Int!] = []
-    locationEntityCodes: [String!] = []
-    locationEntityTypeIds: [String!] = []
-    locationEntityServiceTypeIds: [String!] = []
-    distanceFilter: DistanceFilter
     before: String
     after: String
     first: Int
@@ -2783,371 +2126,7 @@ type VariantInventory {
 }
 
 """
-Wishlist
-"""
-type Wishlist implements Node {
-  """
-  The wishlist id.
-  """
-  entityId: Int!
-
-  """
-  The wishlist name.
-  """
-  name: String!
-
-  """
-  Is the wishlist public?
-  """
-  isPublic: Boolean!
-
-  """
-  The wishlist token.
-  """
-  token: String!
-  items(hideOutOfStock: Boolean, first: Int): WishlistItemConnection!
-
-  """
-  The id of the object.
-  """
-  id: ID!
-}
-
-"""
-Wishlist add items input object
-"""
-input WishlistAddItemsInput {
-  entityId: Int!
-  items: [WishlistItem!]!
-}
-
-"""
-Wishlist create input object
-"""
-input WishlistCreateInput {
-  name: String!
-  isPublic: Boolean!
-  items: [WishlistItem!]!
-}
-
-"""
-Wishlist delete items input object
-"""
-input WishlistDeleteItemsInput {
-  entityId: Int!
-  itemIds: [Int!]!
-}
-
-"""
-Wishlist item
-"""
-input WishlistItem {
-  productId: Int!
-  variantId: Int
-}
-
-"""
-A connection to a list of items.
-"""
-type WishlistItemConnection {
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-
-  """
-  A list of edges.
-  """
-  edges: [WishlistItemEdge]
-}
-
-"""
-An edge in a connection.
-"""
-type WishlistItemEdge {
-  """
-  The item at the end of the edge.
-  """
-  node: wishlistItem!
-
-  """
-  A cursor for use in pagination.
-  """
-  cursor: String!
-}
-
-type WishlistMutations {
-  createWishlist(input: WishlistCreateInput!): wishlist!
-  addWishlistItems(input: WishlistAddItemsInput!): wishlist!
-  deleteWishlistItems(input: WishlistDeleteItemsInput!): wishlist!
-  updateWishlist(input: WishlistUpdateInput!): wishlist!
-}
-
-"""
-Wishlist update input object
-"""
-input WishlistUpdateInput {
-  entityId: Int!
-  data: data!
-}
-
-"""
-Country Code
-"""
-enum countryCode {
-  AW
-  AF
-  AO
-  AI
-  AX
-  AL
-  AD
-  AE
-  AR
-  AM
-  AS
-  AQ
-  TF
-  AG
-  AU
-  AT
-  AZ
-  BI
-  BE
-  BJ
-  BQ
-  BF
-  BD
-  BG
-  BH
-  BS
-  BA
-  BL
-  BY
-  BZ
-  BM
-  BO
-  BR
-  BB
-  BN
-  BT
-  BV
-  BW
-  CF
-  CA
-  CC
-  CH
-  CL
-  CN
-  CI
-  CM
-  CD
-  CG
-  CK
-  CO
-  KM
-  CV
-  CR
-  CU
-  CW
-  CX
-  KY
-  CY
-  CZ
-  DE
-  DJ
-  DM
-  DK
-  DO
-  DZ
-  EC
-  EG
-  ER
-  EH
-  ES
-  EE
-  ET
-  FI
-  FJ
-  FK
-  FR
-  FO
-  FM
-  GA
-  GB
-  GE
-  GG
-  GH
-  GI
-  GN
-  GP
-  GM
-  GW
-  GQ
-  GR
-  GD
-  GL
-  GT
-  GF
-  GU
-  GY
-  HK
-  HM
-  HN
-  HR
-  HT
-  HU
-  ID
-  IM
-  IN
-  IO
-  IE
-  IR
-  IQ
-  IS
-  IL
-  IT
-  JM
-  JE
-  JO
-  JP
-  KZ
-  KE
-  KG
-  KH
-  KI
-  KN
-  KR
-  KW
-  LA
-  LB
-  LR
-  LY
-  LC
-  LI
-  LK
-  LS
-  LT
-  LU
-  LV
-  MO
-  MF
-  MA
-  MC
-  MD
-  MG
-  MV
-  MX
-  MH
-  MK
-  ML
-  MT
-  MM
-  ME
-  MN
-  MP
-  MZ
-  MR
-  MS
-  MQ
-  MU
-  MW
-  MY
-  YT
-  NA
-  NC
-  NE
-  NF
-  NG
-  NI
-  NU
-  NL
-  NO
-  NP
-  NR
-  NZ
-  OM
-  PK
-  PA
-  PN
-  PE
-  PH
-  PW
-  PG
-  PL
-  PR
-  KP
-  PT
-  PY
-  PS
-  PF
-  QA
-  RE
-  RO
-  RU
-  RW
-  SA
-  SD
-  SN
-  SG
-  GS
-  SH
-  SJ
-  SB
-  SL
-  SV
-  SM
-  SO
-  PM
-  RS
-  SS
-  ST
-  SR
-  SK
-  SI
-  SE
-  SZ
-  SX
-  SC
-  SY
-  TC
-  TD
-  TG
-  TH
-  TJ
-  TK
-  TM
-  TL
-  TO
-  TT
-  TN
-  TR
-  TV
-  TW
-  TZ
-  UG
-  UA
-  UM
-  UY
-  US
-  UZ
-  VA
-  VC
-  VE
-  VG
-  VI
-  VN
-  VU
-  WF
-  WS
-  YE
-  ZA
-  ZM
-  ZW
-}
-
-"""
-Currency Code
+Please select a currency
 """
 enum currencyCode {
   ADP
@@ -3204,7 +2183,6 @@ enum currencyCode {
   BUK
   BWP
   BYB
-  BYN
   BYR
   BZD
   CAD
@@ -3222,8 +2200,6 @@ enum currencyCode {
   CRC
   CSD
   CSK
-  CUC
-  CUP
   CVE
   CYP
   CZK
@@ -3276,7 +2252,6 @@ enum currencyCode {
   INR
   IQD
   ISJ
-  IRR
   ISK
   ITL
   JMD
@@ -3286,7 +2261,6 @@ enum currencyCode {
   KGS
   KHR
   KMF
-  KPW
   KRH
   KRO
   KRW
@@ -3438,27 +2412,11 @@ enum currencyCode {
 }
 
 """
-Data to update
+The `BigDecimal` scalar type represents signed fractional values with arbitrary precision.
 """
-input data {
-  name: String
-  isPublic: Boolean
-}
+scalar BigDecimal
 
 """
-Wishlist
+The `Long` scalar type represents non-fractional signed whole numeric values. Long can represent values between -(2^63) and 2^63 - 1.
 """
-type wishlist {
-  result: Wishlist!
-}
-
-"""
-WishlistItem
-"""
-type wishlistItem {
-  """
-  Wishlist item id.
-  """
-  entityId: Int!
-  product: Product!
-}
+scalar Long
