@@ -4,7 +4,7 @@ const { withCommerceConfig } = require('./framework/commerce/config')
 module.exports = withCommerceConfig({
   commerce,
   i18n: {
-    locales: ['en-US', 'es'],
+    locales: ['en-US'],
     defaultLocale: 'en-US',
   },
   rewrites() {

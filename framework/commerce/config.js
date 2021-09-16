@@ -10,10 +10,6 @@ const prettier = require('prettier')
 const PROVIDERS = [
   'local',
   'bigcommerce',
-  'saleor',
-  'shopify',
-  'swell',
-  'vendure',
 ]
 
 function getProviderName() {
