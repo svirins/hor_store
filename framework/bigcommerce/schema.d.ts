@@ -2,6 +2,10 @@ export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
 }
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> }
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> }
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -9,36 +13,11 @@ export type Scalars = {
   Boolean: boolean
   Int: number
   Float: number
-  DateTime: any
   /** The `BigDecimal` scalar type represents signed fractional values with arbitrary precision. */
   BigDecimal: any
+  DateTime: any
   /** The `Long` scalar type represents non-fractional signed whole numeric values. Long can represent values between -(2^63) and 2^63 - 1. */
   Long: any
-}
-
-/** Login result */
-export type LoginResult = {
-  __typename?: 'LoginResult'
-  /** The result of a login */
-  result: Scalars['String']
-}
-
-/** Logout result */
-export type LogoutResult = {
-  __typename?: 'LogoutResult'
-  /** The result of a logout */
-  result: Scalars['String']
-}
-
-export type Mutation = {
-  __typename?: 'Mutation'
-  login: LoginResult
-  logout: LogoutResult
-}
-
-export type MutationLoginArgs = {
-  email: Scalars['String']
-  password: Scalars['String']
 }
 
 /** Aggregated */
@@ -59,6 +38,13 @@ export type AggregatedInventory = {
   warningLevel: Scalars['Int']
 }
 
+/** Author */
+export type Author = {
+  __typename?: 'Author'
+  /** Author name. */
+  name: Scalars['String']
+}
+
 /** Brand */
 export type Brand = Node & {
   __typename?: 'Brand'
@@ -70,12 +56,23 @@ export type Brand = Node & {
   name: Scalars['String']
   /** Default image for brand. */
   defaultImage?: Maybe<Image>
-  /** Page title for the brand. */
+  /**
+   * Page title for the brand.
+   * @deprecated Use SEO details instead.
+   */
   pageTitle: Scalars['String']
-  /** Meta description for the brand. */
+  /**
+   * Meta description for the brand.
+   * @deprecated Use SEO details instead.
+   */
   metaDesc: Scalars['String']
-  /** Meta keywords for the brand. */
+  /**
+   * Meta keywords for the brand.
+   * @deprecated Use SEO details instead.
+   */
   metaKeywords: Array<Scalars['String']>
+  /** Brand SEO details. */
+  seo: SeoDetails
   /** Search keywords for the brand. */
   searchKeywords: Array<Scalars['String']>
   /** Path for the brand page. */
@@ -91,6 +88,7 @@ export type BrandProductsArgs = {
   after?: Maybe<Scalars['String']>
   first?: Maybe<Scalars['Int']>
   last?: Maybe<Scalars['Int']>
+  hideOutOfStock?: Maybe<Scalars['Boolean']>
 }
 
 /** Brand */
@@ -197,6 +195,8 @@ export type CatalogProductOption = {
   displayName: Scalars['String']
   /** One of the option values is required to be selected for the checkout. */
   isRequired: Scalars['Boolean']
+  /** Indicates whether it is a variant option or modifier. */
+  isVariantOption: Scalars['Boolean']
 }
 
 /** Product Option Value */
@@ -229,6 +229,8 @@ export type Category = Node & {
   products: ProductConnection
   /** Metafield data related to a category. */
   metafields: MetafieldConnection
+  /** Category SEO details. */
+  seo: SeoDetails
 }
 
 /** Category */
@@ -246,6 +248,8 @@ export type CategoryProductsArgs = {
   after?: Maybe<Scalars['String']>
   first?: Maybe<Scalars['Int']>
   last?: Maybe<Scalars['Int']>
+  hideOutOfStock?: Maybe<Scalars['Boolean']>
+  sortBy?: Maybe<CategoryProductSort>
 }
 
 /** Category */
@@ -276,6 +280,19 @@ export type CategoryEdge = {
   cursor: Scalars['String']
 }
 
+/** Product sorting by categories. */
+export enum CategoryProductSort {
+  Default = 'DEFAULT',
+  Featured = 'FEATURED',
+  Newest = 'NEWEST',
+  BestSelling = 'BEST_SELLING',
+  AToZ = 'A_TO_Z',
+  ZToA = 'Z_TO_A',
+  BestReviewed = 'BEST_REVIEWED',
+  LowestPrice = 'LOWEST_PRICE',
+  HighestPrice = 'HIGHEST_PRICE',
+}
+
 /** An item in a tree of categories. */
 export type CategoryTreeItem = {
   __typename?: 'CategoryTreeItem'
@@ -289,6 +306,8 @@ export type CategoryTreeItem = {
   description: Scalars['String']
   /** The number of products in this category. */
   productCount: Scalars['Int']
+  /** The category image. */
+  image?: Maybe<Image>
   /** Subcategories of this category */
   children: Array<CategoryTreeItem>
 }
@@ -304,6 +323,8 @@ export type CheckboxOption = CatalogProductOption & {
   displayName: Scalars['String']
   /** One of the option values is required to be selected for the checkout. */
   isRequired: Scalars['Boolean']
+  /** Indicates whether it is a variant option or modifier. */
+  isVariantOption: Scalars['Boolean']
 }
 
 /** Contact field */
@@ -319,6 +340,82 @@ export type ContactField = {
   email: Scalars['String']
   /** Store phone number. */
   phone: Scalars['String']
+}
+
+/** The page content. */
+export type Content = {
+  __typename?: 'Content'
+  renderedRegionsByPageType: RenderedRegionsByPageType
+  renderedRegionsByPageTypeAndEntityId: RenderedRegionsByPageType
+}
+
+/** The page content. */
+export type ContentRenderedRegionsByPageTypeArgs = {
+  pageType: PageType
+}
+
+/** The page content. */
+export type ContentRenderedRegionsByPageTypeAndEntityIdArgs = {
+  entityId: Scalars['Long']
+  entityPageType: EntityPageType
+}
+
+export type Currency = {
+  __typename?: 'Currency'
+  /** Currency ID. */
+  entityId: Scalars['Int']
+  /** Currency code. */
+  code: CurrencyCode
+  /** Currency name. */
+  name: Scalars['String']
+  /** Flag image URL. */
+  flagImage?: Maybe<Scalars['String']>
+  /** Indicates whether this currency is active. */
+  isActive: Scalars['Boolean']
+  /** Exchange rate relative to default currency. */
+  exchangeRate: Scalars['Float']
+  /** Indicates whether this currency is transactional. */
+  isTransactional: Scalars['Boolean']
+  /** Currency display settings. */
+  display: CurrencyDisplay
+}
+
+/** A connection to a list of items. */
+export type CurrencyConnection = {
+  __typename?: 'CurrencyConnection'
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<CurrencyEdge>>>
+}
+
+export type CurrencyDisplay = {
+  __typename?: 'CurrencyDisplay'
+  /** Currency symbol. */
+  symbol: Scalars['String']
+  /** Currency symbol. */
+  symbolPlacement: CurrencySymbolPosition
+  /** Currency decimal token. */
+  decimalToken: Scalars['String']
+  /** Currency thousands token. */
+  thousandsToken: Scalars['String']
+  /** Currency decimal places. */
+  decimalPlaces: Scalars['Int']
+}
+
+/** An edge in a connection. */
+export type CurrencyEdge = {
+  __typename?: 'CurrencyEdge'
+  /** The item at the end of the edge. */
+  node: Currency
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']
+}
+
+/** Currency symbol position */
+export enum CurrencySymbolPosition {
+  Left = 'LEFT',
+  Right = 'RIGHT',
 }
 
 /** Custom field */
@@ -412,6 +509,8 @@ export type DateFieldOption = CatalogProductOption & {
   displayName: Scalars['String']
   /** One of the option values is required to be selected for the checkout. */
   isRequired: Scalars['Boolean']
+  /** Indicates whether it is a variant option or modifier. */
+  isVariantOption: Scalars['Boolean']
 }
 
 /** Date Time Extended */
@@ -430,6 +529,36 @@ export type DisplayField = {
   extendedDateFormat: Scalars['String']
 }
 
+/** Distance */
+export type Distance = {
+  __typename?: 'Distance'
+  /** Distance in specified length unit */
+  value: Scalars['Float']
+  /** Length unit */
+  lengthUnit: LengthUnit
+}
+
+/** Filter locations by the distance */
+export type DistanceFilter = {
+  /** Radius of search in length units specified in lengthUnit argument */
+  radius: Scalars['Float']
+  /** Signed decimal degrees without compass direction */
+  longitude: Scalars['Float']
+  /** Signed decimal degrees without compass direction */
+  latitude: Scalars['Float']
+  lengthUnit: LengthUnit
+}
+
+/** Entity page type */
+export enum EntityPageType {
+  BlogPost = 'BLOG_POST',
+  Brand = 'BRAND',
+  Category = 'CATEGORY',
+  ContactUs = 'CONTACT_US',
+  Page = 'PAGE',
+  Product = 'PRODUCT',
+}
+
 /** A form allowing selection and uploading of a file from the user's local computer. */
 export type FileUploadFieldOption = CatalogProductOption & {
   __typename?: 'FileUploadFieldOption'
@@ -439,6 +568,8 @@ export type FileUploadFieldOption = CatalogProductOption & {
   displayName: Scalars['String']
   /** One of the option values is required to be selected for the checkout. */
   isRequired: Scalars['Boolean']
+  /** Indicates whether it is a variant option or modifier. */
+  isVariantOption: Scalars['Boolean']
 }
 
 /** Image */
@@ -490,6 +621,11 @@ export type InventoryLocationsArgs = {
   entityIds?: Maybe<Array<Scalars['Int']>>
   codes?: Maybe<Array<Scalars['String']>>
   typeIds?: Maybe<Array<Scalars['String']>>
+  serviceTypeIds?: Maybe<Array<Scalars['String']>>
+  distanceFilter?: Maybe<DistanceFilter>
+  countryCodes?: Maybe<Array<CountryCode>>
+  states?: Maybe<Array<Scalars['String']>>
+  cities?: Maybe<Array<Scalars['String']>>
   before?: Maybe<Scalars['String']>
   after?: Maybe<Scalars['String']>
   first?: Maybe<Scalars['Int']>
@@ -507,6 +643,23 @@ export type InventoryByLocations = {
   warningLevel: Scalars['Int']
   /** Indicates whether this product is in stock. */
   isInStock: Scalars['Boolean']
+  /** Distance between location and specified longitude and latitude */
+  locationDistance?: Maybe<Distance>
+  /** Location type id. */
+  locationEntityTypeId?: Maybe<Scalars['String']>
+  /**
+   * Location service type ids.
+   * @deprecated Deprecated. Will be substituted with pickup methods.
+   */
+  locationEntityServiceTypeIds: Array<Scalars['String']>
+  /** Location code. */
+  locationEntityCode: Scalars['String']
+}
+
+/** length unit */
+export enum LengthUnit {
+  Miles = 'Miles',
+  Kilometres = 'Kilometres',
 }
 
 /** A connection to a list of items. */
@@ -527,6 +680,18 @@ export type LocationEdge = {
   cursor: Scalars['String']
 }
 
+/** Login result */
+export type LoginResult = {
+  __typename?: 'LoginResult'
+  /**
+   * The result of a login
+   * @deprecated Use customer node instead.
+   */
+  result: Scalars['String']
+  /** The currently logged in customer. */
+  customer?: Maybe<Customer>
+}
+
 /** Logo field */
 export type LogoField = {
   __typename?: 'LogoField'
@@ -534,6 +699,13 @@ export type LogoField = {
   title: Scalars['String']
   /** Store logo image. */
   image: Image
+}
+
+/** Logout result */
+export type LogoutResult = {
+  __typename?: 'LogoutResult'
+  /** The result of a logout */
+  result: Scalars['String']
 }
 
 /** Measurement */
@@ -603,6 +775,8 @@ export type MultiLineTextFieldOption = CatalogProductOption & {
   displayName: Scalars['String']
   /** One of the option values is required to be selected for the checkout. */
   isRequired: Scalars['Boolean']
+  /** Indicates whether it is a variant option or modifier. */
+  isVariantOption: Scalars['Boolean']
 }
 
 /** An option type that has a fixed list of values. */
@@ -618,6 +792,8 @@ export type MultipleChoiceOption = CatalogProductOption & {
   displayName: Scalars['String']
   /** One of the option values is required to be selected for the checkout. */
   isRequired: Scalars['Boolean']
+  /** Indicates whether it is a variant option or modifier. */
+  isVariantOption: Scalars['Boolean']
 }
 
 /** An option type that has a fixed list of values. */
@@ -639,6 +815,19 @@ export type MultipleChoiceOptionValue = CatalogProductOptionValue & {
   isDefault: Scalars['Boolean']
 }
 
+export type Mutation = {
+  __typename?: 'Mutation'
+  login: LoginResult
+  logout: LogoutResult
+  /** The wishlist mutations. */
+  wishlist: WishlistMutations
+}
+
+export type MutationLoginArgs = {
+  email: Scalars['String']
+  password: Scalars['String']
+}
+
 /** An object with an ID */
 export type Node = {
   /** The id of the object. */
@@ -654,6 +843,8 @@ export type NumberFieldOption = CatalogProductOption & {
   displayName: Scalars['String']
   /** One of the option values is required to be selected for the checkout. */
   isRequired: Scalars['Boolean']
+  /** Indicates whether it is a variant option or modifier. */
+  isVariantOption: Scalars['Boolean']
 }
 
 /** A connection to a list of items. */
@@ -710,6 +901,44 @@ export type PageInfo = {
   endCursor?: Maybe<Scalars['String']>
 }
 
+/** Page type */
+export enum PageType {
+  AccountAddress = 'ACCOUNT_ADDRESS',
+  AccountAddAddress = 'ACCOUNT_ADD_ADDRESS',
+  AccountAddReturn = 'ACCOUNT_ADD_RETURN',
+  AccountAddWishlist = 'ACCOUNT_ADD_WISHLIST',
+  AccountDownloadItem = 'ACCOUNT_DOWNLOAD_ITEM',
+  AccountEdit = 'ACCOUNT_EDIT',
+  AccountInbox = 'ACCOUNT_INBOX',
+  AccountOrdersAll = 'ACCOUNT_ORDERS_ALL',
+  AccountOrdersCompleted = 'ACCOUNT_ORDERS_COMPLETED',
+  AccountOrdersDetails = 'ACCOUNT_ORDERS_DETAILS',
+  AccountOrdersInvoice = 'ACCOUNT_ORDERS_INVOICE',
+  AccountRecentItems = 'ACCOUNT_RECENT_ITEMS',
+  AccountReturns = 'ACCOUNT_RETURNS',
+  AccountReturnSaved = 'ACCOUNT_RETURN_SAVED',
+  AccountWishlists = 'ACCOUNT_WISHLISTS',
+  AccountWishlistDetails = 'ACCOUNT_WISHLIST_DETAILS',
+  AuthAccountCreated = 'AUTH_ACCOUNT_CREATED',
+  AuthCreateAcc = 'AUTH_CREATE_ACC',
+  AuthForgotPass = 'AUTH_FORGOT_PASS',
+  AuthLogin = 'AUTH_LOGIN',
+  AuthNewPass = 'AUTH_NEW_PASS',
+  Blog = 'BLOG',
+  Brands = 'BRANDS',
+  Cart = 'CART',
+  Compare = 'COMPARE',
+  GiftCertBalance = 'GIFT_CERT_BALANCE',
+  GiftCertPurchase = 'GIFT_CERT_PURCHASE',
+  GiftCertRedeem = 'GIFT_CERT_REDEEM',
+  Home = 'HOME',
+  OrderInfo = 'ORDER_INFO',
+  Search = 'SEARCH',
+  Sitemap = 'SITEMAP',
+  Subscribed = 'SUBSCRIBED',
+  Unsubscribe = 'UNSUBSCRIBE',
+}
+
 /** The min and max range of prices that apply to this product. */
 export type PriceRanges = {
   __typename?: 'PriceRanges'
@@ -719,10 +948,15 @@ export type PriceRanges = {
   retailPriceRange?: Maybe<MoneyRange>
 }
 
+export type PriceSearchFilterInput = {
+  minPrice?: Maybe<Scalars['Float']>
+  maxPrice?: Maybe<Scalars['Float']>
+}
+
 /** The various prices that can be set on a product. */
 export type Prices = {
   __typename?: 'Prices'
-  /** Calculated price of the product. */
+  /** Calculated price of the product.  Calculated price takes into account basePrice, salePrice, rules (modifier, option, option set) that apply to the product configuration, and customer group discounts.  It represents the in-cart price for a product configuration without bulk pricing rules. */
   price: Money
   /** Sale price of the product. */
   salePrice?: Maybe<Money>
@@ -767,7 +1001,10 @@ export type Product = Node & {
   maxPurchaseQuantity?: Maybe<Scalars['Int']>
   /** Absolute URL path for adding a product to cart. */
   addToCartUrl: Scalars['String']
-  /** Absolute URL path for adding a product to customer's wishlist. */
+  /**
+   * Absolute URL path for adding a product to customer's wishlist.
+   * @deprecated Deprecated.
+   */
   addToWishlistUrl: Scalars['String']
   /** Prices object determined by supplied product ID, variant ID, and selected option IDs. */
   prices?: Maybe<Prices>
@@ -784,7 +1021,10 @@ export type Product = Node & {
   width?: Maybe<Measurement>
   /** Depth of the product. */
   depth?: Maybe<Measurement>
-  /** Product options. */
+  /**
+   * Product options.
+   * @deprecated Use productOptions instead.
+   */
   options: OptionConnection
   /** Product options. */
   productOptions: ProductOptionConnection
@@ -822,11 +1062,21 @@ export type Product = Node & {
   inventory: ProductInventory
   /** Metafield data related to a product. */
   metafields: MetafieldConnection
+  /** Universal product code. */
+  upc?: Maybe<Scalars['String']>
+  /** Manufacturer part number. */
+  mpn?: Maybe<Scalars['String']>
+  /** Global trade item number. */
+  gtin?: Maybe<Scalars['String']>
   /**
    * Product creation date
    * @deprecated Alpha version. Do not use in production.
    */
   createdAt: DateTimeExtended
+  /** Reviews associated with the product. */
+  reviews: ReviewConnection
+  /** Product SEO details. */
+  seo: SeoDetails
 }
 
 /** Product */
@@ -912,6 +1162,21 @@ export type ProductMetafieldsArgs = {
   after?: Maybe<Scalars['String']>
   first?: Maybe<Scalars['Int']>
   last?: Maybe<Scalars['Int']>
+}
+
+/** Product */
+export type ProductReviewsArgs = {
+  sort?: Maybe<ProductReviewsSortInput>
+  filters?: Maybe<ProductReviewsFiltersInput>
+  before?: Maybe<Scalars['String']>
+  after?: Maybe<Scalars['String']>
+  first?: Maybe<Scalars['Int']>
+  last?: Maybe<Scalars['Int']>
+}
+
+export type ProductAttributeSearchFilterInput = {
+  attribute: Scalars['String']
+  values: Array<Scalars['String']>
 }
 
 /** Product availability */
@@ -1059,6 +1324,22 @@ export type ProductPreOrder = ProductAvailability & {
   description: Scalars['String']
 }
 
+export type ProductReviewsFiltersInput = {
+  rating?: Maybe<ProductReviewsRatingFilterInput>
+}
+
+export type ProductReviewsRatingFilterInput = {
+  minRating?: Maybe<Scalars['Int']>
+  maxRating?: Maybe<Scalars['Int']>
+}
+
+export enum ProductReviewsSortInput {
+  Newest = 'NEWEST',
+  Oldest = 'OLDEST',
+  HighestRating = 'HIGHEST_RATING',
+  LowestRating = 'LOWEST_RATING',
+}
+
 /** Unavailable Product */
 export type ProductUnavailable = ProductAvailability & {
   __typename?: 'ProductUnavailable'
@@ -1085,6 +1366,19 @@ export type QueryNodeArgs = {
   id: Scalars['ID']
 }
 
+export type RatingSearchFilterInput = {
+  minRating?: Maybe<Scalars['Float']>
+  maxRating?: Maybe<Scalars['Float']>
+}
+
+export type Region = {
+  __typename?: 'Region'
+  /** The name of a region. */
+  name: Scalars['String']
+  /** The rendered HTML content targeted at the region. */
+  html: Scalars['String']
+}
+
 /** A connection to a list of items. */
 export type RelatedProductsConnection = {
   __typename?: 'RelatedProductsConnection'
@@ -1103,9 +1397,55 @@ export type RelatedProductsEdge = {
   cursor: Scalars['String']
 }
 
+/** The rendered regions by specific page. */
+export type RenderedRegionsByPageType = {
+  __typename?: 'RenderedRegionsByPageType'
+  regions: Array<Region>
+}
+
+/** Review */
+export type Review = {
+  __typename?: 'Review'
+  /** Unique ID for the product review. */
+  entityId: Scalars['Long']
+  /** Product review author. */
+  author: Author
+  /** Product review title. */
+  title: Scalars['String']
+  /** Product review text. */
+  text: Scalars['String']
+  /** Product review rating. */
+  rating: Scalars['Int']
+  /** Product review creation date. */
+  createdAt: DateTimeExtended
+}
+
+/** A connection to a list of items. */
+export type ReviewConnection = {
+  __typename?: 'ReviewConnection'
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<ReviewEdge>>>
+}
+
+/** An edge in a connection. */
+export type ReviewEdge = {
+  __typename?: 'ReviewEdge'
+  /** The item at the end of the edge. */
+  node: Review
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']
+}
+
 /** Review Rating Summary */
 export type Reviews = {
   __typename?: 'Reviews'
+  /**
+   * Average rating of the product.
+   * @deprecated Alpha version. Do not use in production.
+   */
+  averageRating: Scalars['Float']
   /** Total number of reviews on product. */
   numberOfReviews: Scalars['Int']
   /** Summation of rating scores from each review. */
@@ -1117,6 +1457,70 @@ export type Route = {
   __typename?: 'Route'
   /** node */
   node?: Maybe<Node>
+}
+
+/** Store search settings. */
+export type Search = {
+  __typename?: 'Search'
+  /** Product filtering enabled. */
+  productFilteringEnabled: Scalars['Boolean']
+}
+
+export type SearchProducts = {
+  __typename?: 'SearchProducts'
+  /** Details of the products. */
+  products: ProductConnection
+}
+
+export type SearchProductsProductsArgs = {
+  after?: Maybe<Scalars['String']>
+  first?: Maybe<Scalars['Int']>
+}
+
+export type SearchProductsFiltersInput = {
+  searchTerm?: Maybe<Scalars['String']>
+  price?: Maybe<PriceSearchFilterInput>
+  rating?: Maybe<RatingSearchFilterInput>
+  categoryEntityId?: Maybe<Scalars['Int']>
+  categoryEntityIds?: Maybe<Array<Scalars['Int']>>
+  brandEntityIds?: Maybe<Array<Scalars['Int']>>
+  productAttributes?: Maybe<Array<ProductAttributeSearchFilterInput>>
+  isFreeShipping?: Maybe<Scalars['Boolean']>
+  isFeatured?: Maybe<Scalars['Boolean']>
+  isInStock?: Maybe<Scalars['Boolean']>
+}
+
+export enum SearchProductsSortInput {
+  Featured = 'FEATURED',
+  Newest = 'NEWEST',
+  BestSelling = 'BEST_SELLING',
+  BestReviewed = 'BEST_REVIEWED',
+  AToZ = 'A_TO_Z',
+  ZToA = 'Z_TO_A',
+  LowestPrice = 'LOWEST_PRICE',
+  HighestPrice = 'HIGHEST_PRICE',
+}
+
+export type SearchQueries = {
+  __typename?: 'SearchQueries'
+  /** Details of the products and facets matching given search criteria. */
+  searchProducts: SearchProducts
+}
+
+export type SearchQueriesSearchProductsArgs = {
+  filters: SearchProductsFiltersInput
+  sort?: Maybe<SearchProductsSortInput>
+}
+
+/** Seo Details */
+export type SeoDetails = {
+  __typename?: 'SeoDetails'
+  /** Page title. */
+  pageTitle: Scalars['String']
+  /** Meta description. */
+  metaDescription: Scalars['String']
+  /** Meta keywords. */
+  metaKeywords: Scalars['String']
 }
 
 /** Store settings information from the control panel. */
@@ -1138,11 +1542,19 @@ export type Settings = {
   display: DisplayField
   /** Channel ID. */
   channelId: Scalars['Long']
+  tax?: Maybe<TaxDisplaySettings>
+  /** Store search settings. */
+  search: Search
 }
 
 /** A site */
 export type Site = {
   __typename?: 'Site'
+  /**
+   * The Search queries.
+   * @deprecated Alpha version. Do not use in production.
+   */
+  search: SearchQueries
   categoryTree: Array<CategoryTreeItem>
   /** Details of the brand. */
   brands: BrandConnection
@@ -1160,6 +1572,16 @@ export type Site = {
   route: Route
   /** Store settings. */
   settings?: Maybe<Settings>
+  content: Content
+  /** Currency details. */
+  currency?: Maybe<Currency>
+  /** Store Currencies. */
+  currencies: CurrencyConnection
+}
+
+/** A site */
+export type SiteCategoryTreeArgs = {
+  rootEntityId?: Maybe<Scalars['Int']>
 }
 
 /** A site */
@@ -1179,6 +1601,7 @@ export type SiteProductsArgs = {
   last?: Maybe<Scalars['Int']>
   ids?: Maybe<Array<Scalars['ID']>>
   entityIds?: Maybe<Array<Scalars['Int']>>
+  hideOutOfStock?: Maybe<Scalars['Boolean']>
 }
 
 /** A site */
@@ -1187,6 +1610,7 @@ export type SiteNewestProductsArgs = {
   after?: Maybe<Scalars['String']>
   first?: Maybe<Scalars['Int']>
   last?: Maybe<Scalars['Int']>
+  hideOutOfStock?: Maybe<Scalars['Boolean']>
 }
 
 /** A site */
@@ -1195,6 +1619,7 @@ export type SiteBestSellingProductsArgs = {
   after?: Maybe<Scalars['String']>
   first?: Maybe<Scalars['Int']>
   last?: Maybe<Scalars['Int']>
+  hideOutOfStock?: Maybe<Scalars['Boolean']>
 }
 
 /** A site */
@@ -1203,6 +1628,7 @@ export type SiteFeaturedProductsArgs = {
   after?: Maybe<Scalars['String']>
   first?: Maybe<Scalars['Int']>
   last?: Maybe<Scalars['Int']>
+  hideOutOfStock?: Maybe<Scalars['Boolean']>
 }
 
 /** A site */
@@ -1217,6 +1643,19 @@ export type SiteProductArgs = {
 /** A site */
 export type SiteRouteArgs = {
   path: Scalars['String']
+}
+
+/** A site */
+export type SiteCurrencyArgs = {
+  currencyCode: CurrencyCode
+}
+
+/** A site */
+export type SiteCurrenciesArgs = {
+  before?: Maybe<Scalars['String']>
+  after?: Maybe<Scalars['String']>
+  first?: Maybe<Scalars['Int']>
+  last?: Maybe<Scalars['Int']>
 }
 
 /** Storefront Mode */
@@ -1248,6 +1687,21 @@ export type SwatchOptionValueImageUrlArgs = {
   height?: Maybe<Scalars['Int']>
 }
 
+export type TaxDisplaySettings = {
+  __typename?: 'TaxDisplaySettings'
+  /** Tax display setting for Product Details Page. */
+  pdp: TaxPriceDisplay
+  /** Tax display setting for Product List Page. */
+  plp: TaxPriceDisplay
+}
+
+/** Tax setting can be set included or excluded (Tax setting can also be set to both on PDP/PLP). */
+export enum TaxPriceDisplay {
+  Inc = 'INC',
+  Ex = 'EX',
+  Both = 'BOTH',
+}
+
 /** A single line text input field. */
 export type TextFieldOption = CatalogProductOption & {
   __typename?: 'TextFieldOption'
@@ -1257,6 +1711,8 @@ export type TextFieldOption = CatalogProductOption & {
   displayName: Scalars['String']
   /** One of the option values is required to be selected for the checkout. */
   isRequired: Scalars['Boolean']
+  /** Indicates whether it is a variant option or modifier. */
+  isVariantOption: Scalars['Boolean']
 }
 
 /** Url field */
@@ -1297,6 +1753,12 @@ export type Variant = Node & {
   inventory?: Maybe<VariantInventory>
   /** Metafield data related to a variant. */
   metafields: MetafieldConnection
+  /** Universal product code. */
+  upc?: Maybe<Scalars['String']>
+  /** Manufacturer part number. */
+  mpn?: Maybe<Scalars['String']>
+  /** Global trade item number. */
+  gtin?: Maybe<Scalars['String']>
 }
 
 /** Variant */
@@ -1363,13 +1825,365 @@ export type VariantInventory = {
 /** Variant Inventory */
 export type VariantInventoryByLocationArgs = {
   locationEntityIds?: Maybe<Array<Scalars['Int']>>
+  locationEntityCodes?: Maybe<Array<Scalars['String']>>
+  locationEntityTypeIds?: Maybe<Array<Scalars['String']>>
+  locationEntityServiceTypeIds?: Maybe<Array<Scalars['String']>>
+  distanceFilter?: Maybe<DistanceFilter>
   before?: Maybe<Scalars['String']>
   after?: Maybe<Scalars['String']>
   first?: Maybe<Scalars['Int']>
   last?: Maybe<Scalars['Int']>
 }
 
-/** Please select a currency */
+/** Wishlist */
+export type Wishlist = Node & {
+  __typename?: 'Wishlist'
+  /** The wishlist id. */
+  entityId: Scalars['Int']
+  /** The wishlist name. */
+  name: Scalars['String']
+  /** Is the wishlist public? */
+  isPublic: Scalars['Boolean']
+  /** The wishlist token. */
+  token: Scalars['String']
+  items: WishlistItemConnection
+  /** The id of the object. */
+  id: Scalars['ID']
+}
+
+/** Wishlist */
+export type WishlistItemsArgs = {
+  hideOutOfStock?: Maybe<Scalars['Boolean']>
+  first?: Maybe<Scalars['Int']>
+}
+
+/** Wishlist add items input object */
+export type WishlistAddItemsInput = {
+  entityId: Scalars['Int']
+  items: Array<WishlistItem>
+}
+
+/** Wishlist create input object */
+export type WishlistCreateInput = {
+  name: Scalars['String']
+  isPublic: Scalars['Boolean']
+  items: Array<WishlistItem>
+}
+
+/** Wishlist delete items input object */
+export type WishlistDeleteItemsInput = {
+  entityId: Scalars['Int']
+  itemIds: Array<Scalars['Int']>
+}
+
+/** Wishlist item */
+export type WishlistItem = {
+  productId: Scalars['Int']
+  variantId?: Maybe<Scalars['Int']>
+}
+
+/** A connection to a list of items. */
+export type WishlistItemConnection = {
+  __typename?: 'WishlistItemConnection'
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<WishlistItemEdge>>>
+}
+
+/** An edge in a connection. */
+export type WishlistItemEdge = {
+  __typename?: 'WishlistItemEdge'
+  /** The item at the end of the edge. */
+  node: WishlistItem
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']
+}
+
+export type WishlistMutations = {
+  __typename?: 'WishlistMutations'
+  createWishlist: Wishlist
+  addWishlistItems: Wishlist
+  deleteWishlistItems: Wishlist
+  updateWishlist: Wishlist
+}
+
+export type WishlistMutationsCreateWishlistArgs = {
+  input: WishlistCreateInput
+}
+
+export type WishlistMutationsAddWishlistItemsArgs = {
+  input: WishlistAddItemsInput
+}
+
+export type WishlistMutationsDeleteWishlistItemsArgs = {
+  input: WishlistDeleteItemsInput
+}
+
+export type WishlistMutationsUpdateWishlistArgs = {
+  input: WishlistUpdateInput
+}
+
+/** Wishlist update input object */
+export type WishlistUpdateInput = {
+  entityId: Scalars['Int']
+  data: Data
+}
+
+/** Country Code */
+export enum CountryCode {
+  Aw = 'AW',
+  Af = 'AF',
+  Ao = 'AO',
+  Ai = 'AI',
+  Ax = 'AX',
+  Al = 'AL',
+  Ad = 'AD',
+  Ae = 'AE',
+  Ar = 'AR',
+  Am = 'AM',
+  As = 'AS',
+  Aq = 'AQ',
+  Tf = 'TF',
+  Ag = 'AG',
+  Au = 'AU',
+  At = 'AT',
+  Az = 'AZ',
+  Bi = 'BI',
+  Be = 'BE',
+  Bj = 'BJ',
+  Bq = 'BQ',
+  Bf = 'BF',
+  Bd = 'BD',
+  Bg = 'BG',
+  Bh = 'BH',
+  Bs = 'BS',
+  Ba = 'BA',
+  Bl = 'BL',
+  By = 'BY',
+  Bz = 'BZ',
+  Bm = 'BM',
+  Bo = 'BO',
+  Br = 'BR',
+  Bb = 'BB',
+  Bn = 'BN',
+  Bt = 'BT',
+  Bv = 'BV',
+  Bw = 'BW',
+  Cf = 'CF',
+  Ca = 'CA',
+  Cc = 'CC',
+  Ch = 'CH',
+  Cl = 'CL',
+  Cn = 'CN',
+  Ci = 'CI',
+  Cm = 'CM',
+  Cd = 'CD',
+  Cg = 'CG',
+  Ck = 'CK',
+  Co = 'CO',
+  Km = 'KM',
+  Cv = 'CV',
+  Cr = 'CR',
+  Cu = 'CU',
+  Cw = 'CW',
+  Cx = 'CX',
+  Ky = 'KY',
+  Cy = 'CY',
+  Cz = 'CZ',
+  De = 'DE',
+  Dj = 'DJ',
+  Dm = 'DM',
+  Dk = 'DK',
+  Do = 'DO',
+  Dz = 'DZ',
+  Ec = 'EC',
+  Eg = 'EG',
+  Er = 'ER',
+  Eh = 'EH',
+  Es = 'ES',
+  Ee = 'EE',
+  Et = 'ET',
+  Fi = 'FI',
+  Fj = 'FJ',
+  Fk = 'FK',
+  Fr = 'FR',
+  Fo = 'FO',
+  Fm = 'FM',
+  Ga = 'GA',
+  Gb = 'GB',
+  Ge = 'GE',
+  Gg = 'GG',
+  Gh = 'GH',
+  Gi = 'GI',
+  Gn = 'GN',
+  Gp = 'GP',
+  Gm = 'GM',
+  Gw = 'GW',
+  Gq = 'GQ',
+  Gr = 'GR',
+  Gd = 'GD',
+  Gl = 'GL',
+  Gt = 'GT',
+  Gf = 'GF',
+  Gu = 'GU',
+  Gy = 'GY',
+  Hk = 'HK',
+  Hm = 'HM',
+  Hn = 'HN',
+  Hr = 'HR',
+  Ht = 'HT',
+  Hu = 'HU',
+  Id = 'ID',
+  Im = 'IM',
+  In = 'IN',
+  Io = 'IO',
+  Ie = 'IE',
+  Ir = 'IR',
+  Iq = 'IQ',
+  Is = 'IS',
+  Il = 'IL',
+  It = 'IT',
+  Jm = 'JM',
+  Je = 'JE',
+  Jo = 'JO',
+  Jp = 'JP',
+  Kz = 'KZ',
+  Ke = 'KE',
+  Kg = 'KG',
+  Kh = 'KH',
+  Ki = 'KI',
+  Kn = 'KN',
+  Kr = 'KR',
+  Kw = 'KW',
+  La = 'LA',
+  Lb = 'LB',
+  Lr = 'LR',
+  Ly = 'LY',
+  Lc = 'LC',
+  Li = 'LI',
+  Lk = 'LK',
+  Ls = 'LS',
+  Lt = 'LT',
+  Lu = 'LU',
+  Lv = 'LV',
+  Mo = 'MO',
+  Mf = 'MF',
+  Ma = 'MA',
+  Mc = 'MC',
+  Md = 'MD',
+  Mg = 'MG',
+  Mv = 'MV',
+  Mx = 'MX',
+  Mh = 'MH',
+  Mk = 'MK',
+  Ml = 'ML',
+  Mt = 'MT',
+  Mm = 'MM',
+  Me = 'ME',
+  Mn = 'MN',
+  Mp = 'MP',
+  Mz = 'MZ',
+  Mr = 'MR',
+  Ms = 'MS',
+  Mq = 'MQ',
+  Mu = 'MU',
+  Mw = 'MW',
+  My = 'MY',
+  Yt = 'YT',
+  Na = 'NA',
+  Nc = 'NC',
+  Ne = 'NE',
+  Nf = 'NF',
+  Ng = 'NG',
+  Ni = 'NI',
+  Nu = 'NU',
+  Nl = 'NL',
+  No = 'NO',
+  Np = 'NP',
+  Nr = 'NR',
+  Nz = 'NZ',
+  Om = 'OM',
+  Pk = 'PK',
+  Pa = 'PA',
+  Pn = 'PN',
+  Pe = 'PE',
+  Ph = 'PH',
+  Pw = 'PW',
+  Pg = 'PG',
+  Pl = 'PL',
+  Pr = 'PR',
+  Kp = 'KP',
+  Pt = 'PT',
+  Py = 'PY',
+  Ps = 'PS',
+  Pf = 'PF',
+  Qa = 'QA',
+  Re = 'RE',
+  Ro = 'RO',
+  Ru = 'RU',
+  Rw = 'RW',
+  Sa = 'SA',
+  Sd = 'SD',
+  Sn = 'SN',
+  Sg = 'SG',
+  Gs = 'GS',
+  Sh = 'SH',
+  Sj = 'SJ',
+  Sb = 'SB',
+  Sl = 'SL',
+  Sv = 'SV',
+  Sm = 'SM',
+  So = 'SO',
+  Pm = 'PM',
+  Rs = 'RS',
+  Ss = 'SS',
+  St = 'ST',
+  Sr = 'SR',
+  Sk = 'SK',
+  Si = 'SI',
+  Se = 'SE',
+  Sz = 'SZ',
+  Sx = 'SX',
+  Sc = 'SC',
+  Sy = 'SY',
+  Tc = 'TC',
+  Td = 'TD',
+  Tg = 'TG',
+  Th = 'TH',
+  Tj = 'TJ',
+  Tk = 'TK',
+  Tm = 'TM',
+  Tl = 'TL',
+  To = 'TO',
+  Tt = 'TT',
+  Tn = 'TN',
+  Tr = 'TR',
+  Tv = 'TV',
+  Tw = 'TW',
+  Tz = 'TZ',
+  Ug = 'UG',
+  Ua = 'UA',
+  Um = 'UM',
+  Uy = 'UY',
+  Us = 'US',
+  Uz = 'UZ',
+  Va = 'VA',
+  Vc = 'VC',
+  Ve = 'VE',
+  Vg = 'VG',
+  Vi = 'VI',
+  Vn = 'VN',
+  Vu = 'VU',
+  Wf = 'WF',
+  Ws = 'WS',
+  Ye = 'YE',
+  Za = 'ZA',
+  Zm = 'ZM',
+  Zw = 'ZW',
+}
+
+/** Currency Code */
 export enum CurrencyCode {
   Adp = 'ADP',
   Aed = 'AED',
@@ -1425,6 +2239,7 @@ export enum CurrencyCode {
   Buk = 'BUK',
   Bwp = 'BWP',
   Byb = 'BYB',
+  Byn = 'BYN',
   Byr = 'BYR',
   Bzd = 'BZD',
   Cad = 'CAD',
@@ -1442,6 +2257,8 @@ export enum CurrencyCode {
   Crc = 'CRC',
   Csd = 'CSD',
   Csk = 'CSK',
+  Cuc = 'CUC',
+  Cup = 'CUP',
   Cve = 'CVE',
   Cyp = 'CYP',
   Czk = 'CZK',
@@ -1494,6 +2311,7 @@ export enum CurrencyCode {
   Inr = 'INR',
   Iqd = 'IQD',
   Isj = 'ISJ',
+  Irr = 'IRR',
   Isk = 'ISK',
   Itl = 'ITL',
   Jmd = 'JMD',
@@ -1503,6 +2321,7 @@ export enum CurrencyCode {
   Kgs = 'KGS',
   Khr = 'KHR',
   Kmf = 'KMF',
+  Kpw = 'KPW',
   Krh = 'KRH',
   Kro = 'KRO',
   Krw = 'KRW',
@@ -1651,6 +2470,26 @@ export enum CurrencyCode {
   Zwd = 'ZWD',
   Zwl = 'ZWL',
   Zwr = 'ZWR',
+}
+
+/** Data to update */
+export type Data = {
+  name?: Maybe<Scalars['String']>
+  isPublic?: Maybe<Scalars['Boolean']>
+}
+
+/** Wishlist */
+export type Wishlist = {
+  __typename?: 'wishlist'
+  result: Wishlist
+}
+
+/** WishlistItem */
+export type WishlistItem = {
+  __typename?: 'wishlistItem'
+  /** Wishlist item id. */
+  entityId: Scalars['Int']
+  product: Product
 }
 
 export type GetLoggedInCustomerQueryVariables = Exact<{ [key: string]: never }>
@@ -1806,20 +2645,22 @@ export type ProductInfoFragment = { __typename?: 'Product' } & Pick<
         >
       >
     }
-    localeMeta: { __typename?: 'MetafieldConnection' } & {
-      edges?: Maybe<
-        Array<
-          Maybe<
-            { __typename?: 'MetafieldEdge' } & {
-              node: { __typename?: 'Metafields' } & Pick<
-                Metafields,
-                'key' | 'value'
-              >
-            }
+    localeMeta: Maybe<
+      { __typename?: 'MetafieldConnection' } & {
+        edges?: Maybe<
+          Array<
+            Maybe<
+              { __typename?: 'MetafieldEdge' } & {
+                node: { __typename?: 'Metafields' } & Pick<
+                  Metafields,
+                  'key' | 'value'
+                >
+              }
+            >
           >
         >
-      >
-    }
+      }
+    >
   }
 
 export type ProductConnnectionFragment = {
@@ -1863,7 +2704,7 @@ export type GetAllProductPathsQuery = { __typename?: 'Query' } & {
 export type GetAllProductsQueryVariables = Exact<{
   hasLocale?: Maybe<Scalars['Boolean']>
   locale?: Maybe<Scalars['String']>
-  entityIds?: Maybe<Array<Scalars['Int']>>
+  entityIds?: Maybe<Array<Scalars['Int']> | Scalars['Int']>
   first?: Maybe<Scalars['Int']>
   products?: Maybe<Scalars['Boolean']>
   featuredProducts?: Maybe<Scalars['Boolean']>
@@ -1873,23 +2714,19 @@ export type GetAllProductsQueryVariables = Exact<{
 
 export type GetAllProductsQuery = { __typename?: 'Query' } & {
   site: { __typename?: 'Site' } & {
-    products: { __typename?: 'ProductConnection' } & ProductConnnectionFragment
-    featuredProducts: {
-      __typename?: 'ProductConnection'
-    } & ProductConnnectionFragment
-    bestSellingProducts: {
-      __typename?: 'ProductConnection'
-    } & ProductConnnectionFragment
-    newestProducts: {
-      __typename?: 'ProductConnection'
-    } & ProductConnnectionFragment
+    products?: Maybe<
+      { __typename?: 'ProductConnection' } & ProductConnnectionFragment
+    >
+    featuredProducts?: Maybe<
+      { __typename?: 'ProductConnection' } & ProductConnnectionFragment
+    >
+    bestSellingProducts?: Maybe<
+      { __typename?: 'ProductConnection' } & ProductConnnectionFragment
+    >
+    newestProducts?: Maybe<
+      { __typename?: 'ProductConnection' } & ProductConnnectionFragment
+    >
   }
-}
-
-export type GetCustomerIdQueryVariables = Exact<{ [key: string]: never }>
-
-export type GetCustomerIdQuery = { __typename?: 'Query' } & {
-  customer?: Maybe<{ __typename?: 'Customer' } & Pick<Customer, 'entityId'>>
 }
 
 export type GetProductQueryVariables = Exact<{
@@ -2000,6 +2837,7 @@ export type GetProductQuery = { __typename?: 'Query' } & {
             }
           } & ProductInfoFragment)
         | { __typename: 'Variant' }
+        | { __typename: 'Wishlist' }
       >
     }
   }
@@ -2061,4 +2899,10 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation' } & {
   login: { __typename?: 'LoginResult' } & Pick<LoginResult, 'result'>
+}
+
+export type GetCustomerIdQueryVariables = Exact<{ [key: string]: never }>
+
+export type GetCustomerIdQuery = { __typename?: 'Query' } & {
+  customer?: Maybe<{ __typename?: 'Customer' } & Pick<Customer, 'entityId'>>
 }
