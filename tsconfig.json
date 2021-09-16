@@ -35,10 +35,6 @@
     "./framework/swell",
     "./framework/vendure",
     "./framework/saleor",
-    "framework/local",
-    "framework/saleor",
-    "framework/shopify",
-    "framework/swell",
-    "framework/vendure"
+    "framework/local"
   ]
 }
