@@ -89,7 +89,6 @@ const ProductCard: FC<Props> = ({
 
         {variant === 'default' && (
           <>
-
             <ProductTag
               name={product.name}
               price={`${price} ${product.price?.currencyCode}`}

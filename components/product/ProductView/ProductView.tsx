@@ -48,7 +48,6 @@ const ProductView: FC<ProductViewProps> = ({ product, relatedProducts }) => {
                 ))}
               </ProductSlider>
             </div>
-          
           </div>
 
           <ProductSidebar product={product} className={s.sidebar} />

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { Page } from '@commerce/types/page'
 import getSlug from '@lib/get-slug'
-import {  Vercel } from '@components/icons'
+import { Vercel } from '@components/icons'
 import { Logo, Container } from '@components/ui'
 import { I18nWidget } from '@components/common'
 import s from './Footer.module.css'
@@ -14,8 +14,6 @@ interface Props {
   children?: any
   pages?: Page[]
 }
-
-
 
 const Footer: FC<Props> = ({ className, pages }) => {
   const { sitePages } = usePages(pages)
@@ -60,17 +58,18 @@ const Footer: FC<Props> = ({ className, pages }) => {
           </div>
           <div className="flex items-center text-primary text-sm">
             <span className="text-primary"></span>
+            Made with{' '}
+            <span role="img" aria-labelledby="mixed">
+              💜
+            </span>{' '}
+            by
             <a
-              rel="noopener noreferrer"
-              href="https://vercel.com"
-              aria-label="Vercel.com Link"
               target="_blank"
               className="text-primary"
+              rel="noopener noreferrer"
+              href="https://twitter.com/svirins"
             >
-              <Vercel
-                className="inline-block h-6 ml-3 text-primary"
-                alt="Vercel.com Logo"
-              />
+              @svirins
             </a>
           </div>
         </div>

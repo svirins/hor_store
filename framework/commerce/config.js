@@ -7,10 +7,7 @@ const fs = require('fs')
 const merge = require('deepmerge')
 const prettier = require('prettier')
 
-const PROVIDERS = [
-  'local',
-  'bigcommerce',
-]
+const PROVIDERS = ['local', 'bigcommerce']
 
 function getProviderName() {
   return (
