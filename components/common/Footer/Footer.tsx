@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { Page } from '@commerce/types/page'
 import getSlug from '@lib/get-slug'
-import { Vercel } from '@components/icons'
 import { Logo, Container } from '@components/ui'
 import { I18nWidget } from '@components/common'
 import s from './Footer.module.css'
@@ -62,7 +61,7 @@ const Footer: FC<Props> = ({ className, pages }) => {
             <span role="img" aria-labelledby="mixed">
               💜
             </span>{' '}
-            by
+            by{' '}
             <a
               target="_blank"
               className="text-primary"
