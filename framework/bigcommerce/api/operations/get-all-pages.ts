@@ -34,7 +34,7 @@ export default function getAllPagesOperation({
     // required in case there's a custom `url`
     const { data } = await cfg.storeApiFetch<
       RecursivePartial<{ data: Page[] }>
-    >('/v3/content/pages')
+    >('/v3/content/pages?limit=250')
     const pages = (data as RecursiveRequired<typeof data>) ?? []
 
     return {
