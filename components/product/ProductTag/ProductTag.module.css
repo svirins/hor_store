@@ -4,13 +4,13 @@
 
 .root .name {
   @apply w-full max-w-full pt-0 leading-extra-loose;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   letter-spacing: 0.4px;
   line-height: 2em;
 }
 
 .root .name span {
-  @apply px-6 py-4 font-semibold text-white bg-pink;
+  @apply px-6 py-4 font-normal text-white bg-pink;
   min-height: 70px;
   font-size: inherit;
   letter-spacing: inherit;

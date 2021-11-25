@@ -8,10 +8,12 @@
     transform: scale(1.1);
   }
 
-  & .header .name span,
+  & .header .name span {
+    @apply bg-pink text-secondary;
+  }
   & .header .price,
   & .wishlistButton {
-    @apply bg-pink text-secondary;
+    @apply bg-violet text-secondary;
   }
 }
 
@@ -26,7 +28,7 @@
 }
 
 .header .name span {
-  @apply px-6 py-4 font-bold transition-colors duration-500 ease-in-out bg-primary text-primary;
+  @apply px-6 py-2  transition-colors duration-500 ease-in-out bg-primary text-primary;
   font-size: inherit;
   letter-spacing: inherit;
   box-decoration-break: clone;
@@ -34,7 +36,7 @@
 }
 
 .header .price {
-  @apply inline-block px-6 pt-2 pb-4 text-sm font-semibold tracking-wide transition-colors duration-500 ease-in-out bg-primary text-accent-9;
+  @apply inline-block px-6 pt-2 pb-2 text-sm font-bold tracking-wide transition-colors duration-500 ease-in-out bg-primary text-accent-9;
 }
 
 .imageContainer {
