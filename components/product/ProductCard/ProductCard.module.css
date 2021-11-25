@@ -1,61 +1,32 @@
 .root {
-  @apply relative max-h-full w-full box-border overflow-hidden
-  bg-no-repeat bg-center bg-cover transition-transform
-  ease-linear cursor-pointer inline-block bg-accent-1;
+  @apply box-border relative inline-block w-full max-h-full overflow-hidden transition-transform ease-linear bg-center bg-no-repeat bg-cover cursor-pointer bg-accent-1;
   height: 100% !important;
 }
 
 .root:hover {
   & .productImage {
-    transform: scale(1.2625);
+    transform: scale(1.1);
   }
 
   & .header .name span,
   & .header .price,
   & .wishlistButton {
-    @apply bg-secondary text-secondary;
-  }
-
-  &:nth-child(6n + 1) .header .name span,
-  &:nth-child(6n + 1) .header .price,
-  &:nth-child(6n + 1) .wishlistButton {
-    @apply bg-violet text-white;
-  }
-
-  &:nth-child(6n + 5) .header .name span,
-  &:nth-child(6n + 5) .header .price,
-  &:nth-child(6n + 5) .wishlistButton {
-    @apply bg-blue text-white;
-  }
-
-  &:nth-child(6n + 3) .header .name span,
-  &:nth-child(6n + 3) .header .price,
-  &:nth-child(6n + 3) .wishlistButton {
-    @apply bg-pink text-white;
-  }
-
-  &:nth-child(6n + 6) .header .name span,
-  &:nth-child(6n + 6) .header .price,
-  &:nth-child(6n + 6) .wishlistButton {
-    @apply bg-cyan text-white;
+    @apply bg-pink text-secondary;
   }
 }
 
 .header {
-  @apply transition-colors ease-in-out duration-500
-  absolute top-0 left-0 z-20 pr-16;
+  @apply absolute top-0 left-0 z-20 pr-16 transition-colors duration-500 ease-in-out;
 }
 
 .header .name {
-  @apply pt-0 max-w-full w-full leading-extra-loose
-  transition-colors ease-in-out duration-500;
+  @apply w-full max-w-full pt-0 transition-colors duration-500 ease-in-out leading-extra-loose;
   font-size: 2rem;
   letter-spacing: 0.4px;
 }
 
 .header .name span {
-  @apply py-4 px-6 bg-primary text-primary font-bold
-  transition-colors ease-in-out duration-500;
+  @apply px-6 py-4 font-bold transition-colors duration-500 ease-in-out bg-primary text-primary;
   font-size: inherit;
   letter-spacing: inherit;
   box-decoration-break: clone;
@@ -63,9 +34,7 @@
 }
 
 .header .price {
-  @apply pt-2 px-6 pb-4 text-sm bg-primary text-accent-9
-  font-semibold inline-block tracking-wide
-  transition-colors ease-in-out duration-500;
+  @apply inline-block px-6 pt-2 pb-4 text-sm font-semibold tracking-wide transition-colors duration-500 ease-in-out bg-primary text-accent-9;
 }
 
 .imageContainer {
@@ -77,17 +46,16 @@
 }
 
 .imageContainer .productImage {
-  @apply transform transition-transform duration-500
-  object-cover scale-120;
+  @apply object-cover transition-transform duration-500 transform;
 }
 
 .root .wishlistButton {
-  @apply top-0 right-0 z-30 absolute;
+  @apply absolute top-0 right-0 z-30;
 }
 
 /* Variant Simple */
 .simple .header .name {
-  @apply pt-2 text-lg leading-10 -mt-1;
+  @apply pt-2 -mt-1 text-lg leading-10;
 }
 
 .simple .header .price {
@@ -96,17 +64,15 @@
 
 /* Variant Slim */
 .slim {
-  @apply bg-transparent relative overflow-hidden
-  box-border;
+  @apply box-border relative overflow-hidden bg-transparent;
 }
 
 .slim .header {
-  @apply absolute inset-0 flex items-center justify-end mr-8 z-20;
+  @apply absolute inset-0 z-20 flex items-center justify-end mr-8;
 }
 
 .slim span {
-  @apply bg-accent-9 text-accent-0 inline-block p-3
-  font-bold text-xl break-words;
+  @apply inline-block p-3 text-xl font-bold break-words bg-accent-9 text-accent-0;
 }
 
 .root:global(.secondary) .header span {

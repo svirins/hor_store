@@ -1,18 +1,18 @@
 .control {
-  @apply bg-violet absolute bottom-10 right-10 flex flex-row
-  border-accent-0 border text-accent-0 z-30 shadow-xl select-none;
+  @apply absolute z-30 flex flex-row border shadow-xl select-none bg-pink bottom-5 border-accent-0 text-accent-0;
   height: 48px;
+  display: none;
 }
 
 .leftControl,
 .rightControl {
-  @apply px-9 cursor-pointer;
+  @apply px-4 cursor-pointer;
   transition: background-color 0.2s ease;
 }
 
 .leftControl:hover,
 .rightControl:hover {
-  background-color: var(--violet-dark);
+  background-color: #ccc;
 }
 
 .leftControl:focus,

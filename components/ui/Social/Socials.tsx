@@ -1,4 +1,4 @@
-const Logo = ({ className = '', ...props }) => (
+const IG = ({ className = '', ...props }) => (
   <svg
     width="32"
     height="32"

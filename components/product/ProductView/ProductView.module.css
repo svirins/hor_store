@@ -1,23 +1,19 @@
 .root {
-  @apply relative grid items-start gap-1 grid-cols-1 overflow-x-hidden;
+  @apply relative grid items-start grid-cols-1 gap-1 overflow-x-hidden;
   min-height: auto;
 }
 
 .main {
-  @apply relative px-0 pb-0 box-border  flex flex-col col-span-1;
+  @apply box-border relative flex flex-col col-span-1 px-0 pb-0;
   min-height: 500px;
 }
 
 .sidebar {
-  @apply flex flex-col col-span-1 mx-auto max-w-8xl px-6 py-6 w-full h-full;
+  @apply flex flex-col w-full h-full col-span-1 px-6 py-6 mx-auto max-w-8xl;
 }
 
 .sliderContainer {
-  @apply flex items-center justify-center overflow-x-hidden bg-violet;
-}
-
-.imageContainer {
-  @apply text-center;
+  @apply flex items-center justify-center overflow-x-hidden;
 }
 
 .imageContainer > div,
@@ -26,7 +22,7 @@
 }
 
 .sliderContainer .img {
-  @apply w-full h-auto max-h-full object-cover;
+  @apply object-cover w-full h-auto max-h-full;
 }
 
 .button {
@@ -34,11 +30,11 @@
 }
 
 .wishlistButton {
-  @apply absolute z-30 top-0 right-0;
+  @apply absolute top-0 right-0 z-30;
 }
 
 .relatedProductsGrid {
-  @apply grid grid-cols-2 py-2 gap-2 md:grid-cols-4 md:gap-7;
+  @apply grid grid-cols-2 gap-2 py-2 md:grid-cols-4 md:gap-7;
 }
 
 @screen lg {
@@ -47,11 +43,11 @@
   }
 
   .main {
-    @apply mx-0 col-span-8;
+    @apply col-span-6 mx-0;
   }
 
   .sidebar {
-    @apply col-span-4 py-6;
+    @apply col-span-6 py-6;
   }
 
   .imageContainer {

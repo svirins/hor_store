@@ -48,7 +48,7 @@ const ProductSidebar: FC<ProductSidebarProps> = ({ product, className }) => {
         setSelectedOptions={setSelectedOptions}
       />
       <Text
-        className="pb-4 break-words w-full max-w-xl"
+        className="w-full max-w-xl pb-4 break-words"
         html={product.descriptionHtml || product.description}
       />
       <div>
@@ -69,13 +69,10 @@ const ProductSidebar: FC<ProductSidebarProps> = ({ product, className }) => {
       </div>
       <div className="mt-6">
         <Collapse title="Care">
-          This is a limited edition production run. Printing starts when the
-          drop ends.
+          Wash cold, below 30 degrees (°C). Do not iron or bleach.
         </Collapse>
         <Collapse title="Details">
-          This is a limited edition production run. Printing starts when the
-          drop ends. Reminder: Bad Boys For Life. Shipping may take 10+ days due
-          to COVID-19.
+          Fabric composition: Outer Layer: 80% Cotton, 20% Polyester.
         </Collapse>
       </div>
     </div>

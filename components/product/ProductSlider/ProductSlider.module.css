@@ -1,6 +1,7 @@
 .root {
   @apply relative w-full h-full select-none;
   overflow: hidden;
+  background-color: #f3ede9;
 }
 
 .slider {
@@ -13,15 +14,14 @@
 }
 
 .thumb {
-  @apply transition-transform transition-colors
-  ease-linear duration-75 overflow-hidden inline-block
-  cursor-pointer h-full;
-  width: 125px;
-  width: calc(100% / 3);
+  @apply inline-block overflow-hidden transition-colors transition-transform duration-75 ease-linear cursor-pointer;
+  width: 75px;
+  scale: 1;
 }
 
 .thumb.selected {
-  @apply bg-white;
+  border-bottom: 4px solid red;
+  scale: 1.7;
 }
 
 .thumb img {
@@ -29,14 +29,11 @@
 }
 
 .album {
-  width: 100%;
-  height: 100%;
-  @apply bg-violet-dark;
   box-sizing: content-box;
   overflow-y: hidden;
   overflow-x: auto;
   white-space: nowrap;
-  height: 125px;
+  height: 75px;
   scrollbar-width: none;
 }
 
@@ -48,11 +45,9 @@
 @screen md {
   .thumb:hover {
     transform: scale(1.02);
-    background-color: rgba(255, 255, 255, 0.08);
   }
 
   .thumb.selected {
-    @apply bg-white;
   }
 
   .album {
